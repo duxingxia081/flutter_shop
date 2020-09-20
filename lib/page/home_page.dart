@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_shop/component/swiper_widget.dart';
+import 'package:flutter_shop/service/service_base.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,52 +13,32 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  TextEditingController _textEditingController = TextEditingController();
-  String _showText = '美女';
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: Scaffold(
-      appBar: AppBar(
-        title: Text('美好人间'),
-      ),
-      body: Container(
-        child: Column(
-          children: [
-            TextField(
-              controller: _textEditingController,
-              decoration: InputDecoration(
-                  labelText: '商品类型',
-                  helperText: '请输入商品类型',
-                  contentPadding: EdgeInsets.all(10)),
-              autofocus: false,
-            ),
-            RaisedButton(
-              onPressed: _choiseAction,
-              child: Text('选择完毕'),
-            ),
-            Text(_showText)
-          ],
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('我们的生活'),
         ),
-      ),
-    ));
-  }
-
-  void _choiseAction() {
-    if (_textEditingController.text.isEmpty) {
-      showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-                title: Text('商品类型不能为空'),
-              ));
-    } else {
-      getHttp(_textEditingController.text.toString()).then((value) {
-        setState(() {
-          print(value);
-          _showText = value['data']['name'];
-        });
-      });
-    }
+        body: FutureBuilder(
+            future: getData('homePageContent', null),
+            builder: (context, response) {
+              if (response.hasData) {
+                var data = json.decode(response.data);
+                List<Map> swiperDataList =
+                    (data['data']['slides'] as List).cast();
+                return Column(
+                  children: [
+                    SwiperWidget(
+                      swiperDatas: swiperDataList,
+                    )
+                  ],
+                );
+              } else {
+                return Center(
+                  child: Text('加载中...'),
+                );
+              }
+            }));
   }
 
   Future getHttp(String text) async {
@@ -78,7 +61,7 @@ class _HomePageState extends State<HomePage> {
           queryParameters: data
           //  queryParameters:data
           );
-          print(response.data);
+      print(response.data);
       return response.data;
     } catch (e) {
       return print(e);
