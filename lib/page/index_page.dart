@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:flutter_shop/page/cart_page.dart';
 import 'package:flutter_shop/page/category_page.dart';
 import 'package:flutter_shop/page/home_page.dart';
@@ -12,6 +15,15 @@ class IndexPage extends StatefulWidget {
 }
 
 class _IndexPageState extends State<IndexPage> {
+  @override
+  void initState() {
+    WidgetsFlutterBinding.ensureInitialized();
+    ScreenUtil.init();
+    print('设备宽度:${ScreenUtil().screenWidth}');
+    print('设备高度:${ScreenUtil().screenHeight}');
+    print('设备像素密度:${ScreenUtil().pixelRatio}');
+    super.initState();
+  }
   final List<BottomNavigationBarItem> _bottomBars = [
     BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('首页')),
     BottomNavigationBarItem(icon: Icon(Icons.category), title: Text('分类')),
