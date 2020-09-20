@@ -5,6 +5,7 @@ import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shop/component/swiper_widget.dart';
+import 'package:flutter_shop/component/top_navigator.dart';
 import 'package:flutter_shop/service/service_base.dart';
 
 class HomePage extends StatefulWidget {
@@ -26,11 +27,14 @@ class _HomePageState extends State<HomePage> {
                 var data = json.decode(response.data);
                 List<Map> swiperDataList =
                     (data['data']['slides'] as List).cast();
+                List<Map> navigatorList =
+                    (data['data']['category'] as List).cast(); //类别列表
                 return Column(
                   children: [
                     SwiperWidget(
                       swiperDatas: swiperDataList,
-                    )
+                    ),
+                    TopNavigator(navigatorDatas: navigatorList)
                   ],
                 );
               } else {
